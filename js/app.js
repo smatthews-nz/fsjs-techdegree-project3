@@ -1,6 +1,6 @@
 
 document.addEventListener('DOMContentLoaded', () => {
-
+let total = 0
 //when the page loads, focus should be in the name field
 $('#name').focus();
 //hide the colors unless a design has been selected
@@ -45,14 +45,34 @@ $('#colors-js-puns').show();
     $('#color option[value ="dimgrey"]').show();
   }
 });
-//append the running total
-$('<p><p>').addClass("total").insertAfter($('label:contains("npm Workshop — Wednesday 1pm-4pm, $100")'));
-//Add an event listener to the parent element of all of the checkboxes.
-$('[type="checkbox"]').change( () => {
-//add running total for workshop costs
-if($('[type="checkbox"]').eq(0).is(':checked')){
-$('.total').text("Total: $200");
 
+//append the running total
+$('<p>').addClass("total").text("Total: $" + total).insertAfter($('label:contains("npm Workshop — Wednesday 1pm-4pm, $100")'));
+//Add an event listener to the parent element of all of the checkboxes.
+$('[type="checkbox"]').click( () => {
+//add running total for workshop costs if main workshop is checked.
+if($('[name="all"]').is(':checked')){
+  total += 200;
+} else if($('[name="js-frameworks"]').is(':checked')){
+  total += 100;
+}
+$('.total').text("Total: $" + total);
+//if checkbox for Frameworks is checked, disable Express checkbox
+if($('[type="checkbox"]').eq(1).prop('checked')){
+  $('[type="checkbox"]').eq(3).attr('disabled', true);
+  $('label:contains("Express Workshop — Tuesday 9am-12pm, $100")').css('color', 'gray');
+} else if ($('[type="checkbox"]').eq(3).prop('checked')){
+  $('[type="checkbox"]').eq(1).attr('disabled', true);
+  $('label:contains("JavaScript Frameworks Workshop — Tuesday 9am-12pm, $100")').css('color', 'gray');
+}
+
+//if libraries workshop is checked, disable Node.js workshop checkbox
+if($('[type="checkbox"]').eq(2).prop('checked')){
+  $('[type="checkbox"]').eq(4).attr('disabled', true);
+  $('label:contains("Node.js Workshop — Tuesday 1pm-4pm, $100")').css('color', 'gray');
+} else if($('[type="checkbox"]').eq(4).prop('checked')){
+  $('[type="checkbox"]').eq(2).attr('disabled', true);
+  $('label:contains("JavaScript Libraries Workshop — Tuesday 1pm-4pm, $100")').css('color', 'gray');
 }
 
 });
