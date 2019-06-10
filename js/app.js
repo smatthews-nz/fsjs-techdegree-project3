@@ -80,6 +80,16 @@ const commaIndex = text.indexOf(',');
 //get the string of day and time from the text
 const dayAndTime = text.slice(dashIndex + 1, commaIndex);
 
+const checkboxes = $('[type="checkbox"]');
+
+for(let i = 0; i < checkboxes.length; i++){
+  let checkbox = checkboxes[i];
+  console.log(checkbox.parent());
+
+  // if(checkboxes[i].parent().text().contains(dayAndTime) && checkboxes[i] !== clickedInput){
+  //   checkboxes[i].prop("disabled", true);
+  //   checkboxes[i].css('color', 'grey');
+  // }
 }
 
 
