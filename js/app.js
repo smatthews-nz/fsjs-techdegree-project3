@@ -1,10 +1,13 @@
 
 document.addEventListener('DOMContentLoaded', () => {
+  //total variable to track cost of registration
 let total = 0
 //when the page loads, focus should be in the name field
 $('#name').focus();
 //hide the colors unless a design has been selected
 $('#colors-js-puns').hide();
+//append the total cost element
+$('<p>').addClass("total").text("Total: $" + total).insertAfter($('label:contains("npm Workshop — Wednesday 1pm-4pm, $100")'));
 
 //add event listener to the title field
 $('#title').change( () => {
@@ -47,35 +50,41 @@ $('#colors-js-puns').show();
 });
 
 //append the running total
-$('<p>').addClass("total").text("Total: $" + total).insertAfter($('label:contains("npm Workshop — Wednesday 1pm-4pm, $100")'));
+
 //Add an event listener to the parent element of all of the checkboxes.
-$('[type="checkbox"]').click( () => {
-//add running total for workshop costs if main workshop is checked.
-if($('[name="all"]').is(':checked')){
-  total += 200;
-} else if($('[name="js-frameworks"]').is(':checked')){
-  total += 100;
+$('[type="checkbox"]').click( (event) => {
+//target the element that was just clicked and store in a variable
+const clickedInput = $(event.target);
+//store the value of the text conten for the label
+const text = clickedInput.parent().text();
+//get the index value of the $ in the string
+const $index = text.indexOf('$');
+//get the cost of the workshop by using a slice from the $index (+1 to get just the number), and the length of the string
+let cost = text.slice($index +1 , text.length);
+//parse cost to an int for easy math
+cost = parseInt(cost);
+//if checkbox is checked add to total
+if(clickedInput.is(':checked')){
+  total += cost;
+} else {
+  //else if checkbox is unchecked, minus from total
+  total -= cost;
 }
 $('.total').text("Total: $" + total);
-//if checkbox for Frameworks is checked, disable Express checkbox
-if($('[type="checkbox"]').eq(1).prop('checked')){
-  $('[type="checkbox"]').eq(3).attr('disabled', true);
-  $('label:contains("Express Workshop — Tuesday 9am-12pm, $100")').css('color', 'gray');
-} else if ($('[type="checkbox"]').eq(3).prop('checked')){
-  $('[type="checkbox"]').eq(1).attr('disabled', true);
-  $('label:contains("JavaScript Frameworks Workshop — Tuesday 9am-12pm, $100")').css('color', 'gray');
+
+//disable conflicting workshops
+//get the index of the hyphen in the text
+const dashIndex = text.indexOf('—');
+//get the index of the comma in the text
+const commaIndex = text.indexOf(',');
+//get the string of day and time from the text
+const dayAndTime = text.slice(dashIndex + 1, commaIndex);
+
 }
 
-//if libraries workshop is checked, disable Node.js workshop checkbox
-if($('[type="checkbox"]').eq(2).prop('checked')){
-  $('[type="checkbox"]').eq(4).attr('disabled', true);
-  $('label:contains("Node.js Workshop — Tuesday 1pm-4pm, $100")').css('color', 'gray');
-} else if($('[type="checkbox"]').eq(4).prop('checked')){
-  $('[type="checkbox"]').eq(2).attr('disabled', true);
-  $('label:contains("JavaScript Libraries Workshop — Tuesday 1pm-4pm, $100")').css('color', 'gray');
-}
 
 });
+
 
 
 
