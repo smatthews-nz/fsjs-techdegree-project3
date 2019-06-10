@@ -8,6 +8,22 @@ $('#name').focus();
 $('#colors-js-puns').hide();
 //append the total cost element
 $('<p>').addClass("total").text("Total: $" + total).insertAfter($('label:contains("npm Workshop — Wednesday 1pm-4pm, $100")'));
+//isValidName function takes a name as an argument, and ensures it is more than 3 letters of any case
+const isValidName = (name) => {
+
+  if(/^[a-z\S]{3,}/i.test(name)){
+    return true;
+    console.log("Name is long enough!")
+  } else {
+    console.log("Name must be at least 3 letters long");
+    $('name').css('color', 'red');
+  }
+}
+
+$('#name').on("keyup change", (event) => {
+  let name = $(event.target).text()
+  isValidName(name);
+});
 
 //add event listener to the title field
 $('#title').change( () => {
