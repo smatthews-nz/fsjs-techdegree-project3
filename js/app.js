@@ -102,7 +102,27 @@ for(let i = 0; i < checkboxes.length; i++){
 });
 
 
-
+//Show payment instructions based upon the payment method selected
+$('#payment').change( (event) => {
+  //hide the Select Payment Method option
+  $('#payment option[value="select_method"]').hide();
+  //set variable from the clicked options
+  const selectedInput = $(event.target).val();
+  const creditCardInfo;
+  const paypalInfo = $('p:contains("If you selected the PayPal option we\'ll take you to Paypal\'s site to set up your billing information, when you click \“Register\” below');
+  //switch on the value of the option
+  switch(selectedInput){
+    case "credit card":
+    paypalInfo.hide();
+    $('p:contains("If you selected the Bitcoin option we\'ll take you to the Coinbase site to set up your billing information. Due to the nature of exchanging Bitcoin, all Bitcoin transactions will be final.")').hide();
+    break;
+    case "paypal"":
+    $('p:contains("If you selected the PayPal option we\'ll take you to Paypal\'s site to set up your billing information, when you click \“Register\” below.")').show();
+    $('p:contains("If you selected the Bitcoin option we\'ll take you to the Coinbase site to set up your billing information. Due to the nature of exchanging Bitcoin, all Bitcoin transactions will be final.")').hide();
+    $
+    break;
+  }
+});
 
 
 
