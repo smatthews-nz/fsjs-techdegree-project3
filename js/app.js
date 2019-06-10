@@ -79,20 +79,26 @@ const dashIndex = text.indexOf('—');
 const commaIndex = text.indexOf(',');
 //get the string of day and time from the text
 const dayAndTime = text.slice(dashIndex + 1, commaIndex);
-
+//select the checkboxes
 const checkboxes = $('[type="checkbox"]');
-
+//loop through all checkboxes
 for(let i = 0; i < checkboxes.length; i++){
-  let checkbox = checkboxes[i];
-  console.log(checkbox.parent());
-
-  // if(checkboxes[i].parent().text().contains(dayAndTime) && checkboxes[i] !== clickedInput){
-  //   checkboxes[i].prop("disabled", true);
-  //   checkboxes[i].css('color', 'grey');
-  // }
+  //store in a variable
+  let checkboxText = checkboxes[i].parentElement.textContent;
+//check if day and time are contained in the text of other options, and check that it is not the same option
+    if(checkboxText.includes(dayAndTime) && text !== checkboxText){
+      //if clickedInput is checked, disable conflicting options, and change text to grey
+      if(clickedInput.is(':checked')){
+    $('[type="checkbox"]').eq(i).attr("disabled", true);
+    $('[type="checkbox"]').eq(i).parent().css("color", "dimgrey");
+    } else {
+      //else if unchecked, reactivate element, and change text to black.
+      $('[type="checkbox"]').eq(i).attr("disabled", false);
+      $('[type="checkbox"]').eq(i).parent().css("color", "black");
+    }
+  }
 }
-
-
+//end event listener
 });
 
 
