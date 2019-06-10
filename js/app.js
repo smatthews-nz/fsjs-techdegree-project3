@@ -49,7 +49,6 @@ $('#colors-js-puns').show();
   }
 });
 
-//append the running total
 
 //Add an event listener to the parent element of all of the checkboxes.
 $('[type="checkbox"]').click( (event) => {
@@ -108,19 +107,28 @@ $('#payment').change( (event) => {
   $('#payment option[value="select_method"]').hide();
   //set variable from the clicked options
   const selectedInput = $(event.target).val();
-  const creditCardInfo;
-  const paypalInfo = $('p:contains("If you selected the PayPal option we\'ll take you to Paypal\'s site to set up your billing information, when you click \“Register\” below');
+  const creditCardInfo = $('#credit-card');
+  const paypalInfo = $('p:contains("If you selected the PayPal option we\'ll take you to Paypal\'s site to set up your billing information, when you click \“Register\” below")');
+  const bitcoinInfo = $('p:contains("If you selected the Bitcoin option we\'ll take you to the Coinbase site to set up your billing information. Due to the nature of exchanging Bitcoin, all Bitcoin transactions will be final.")')
   //switch on the value of the option
   switch(selectedInput){
     case "credit card":
+    //if credit card selected, ensure credit card option is shown, and others hidden
+    creditCardInfo.show();
     paypalInfo.hide();
-    $('p:contains("If you selected the Bitcoin option we\'ll take you to the Coinbase site to set up your billing information. Due to the nature of exchanging Bitcoin, all Bitcoin transactions will be final.")').hide();
+    bitcoinInfo.hide();
     break;
-    case "paypal"":
-    $('p:contains("If you selected the PayPal option we\'ll take you to Paypal\'s site to set up your billing information, when you click \“Register\” below.")').show();
-    $('p:contains("If you selected the Bitcoin option we\'ll take you to the Coinbase site to set up your billing information. Due to the nature of exchanging Bitcoin, all Bitcoin transactions will be final.")').hide();
-    $
+    case "paypal":
+    //if paypal option is chosen, ensure paypal information is shown, and others hidden
+    paypalInfo.show();
+    bitcoinInfo.hide();
+    creditCardInfo.hide();
     break;
+    case "bitcoin":
+    //if bitcoin option is chosen, ensure bitcoin information is shown, and others hidden
+    bitcoinInfo.show();
+    creditCardInfo.hide();
+    paypalInfo.hide();
   }
 });
 
