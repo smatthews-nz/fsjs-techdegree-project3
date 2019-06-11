@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
   //total variable to track cost of registration
 let total = 0
@@ -12,7 +11,15 @@ const bitcoinInfo = $('p:contains("If you selected the Bitcoin option we\'ll tak
 const $nameWarning = "<p> Name must be at least 3 letters! </p>";
 $($nameWarning).insertAfter($('#name'));
 $('p:contains("Name must be at least 3 letters!")').addClass("name-warning");
+//hidden on default
 $('.name-warning').hide();
+
+//email warning text
+const $emailWarning = " <p> Please enter a valid email address! </p>"
+$($emailWarning ).insertAfter($('#mail'));
+$('p:contains("Please enter a valid email address!")').addClass("email-warning");
+//hidden on default
+$('.email-warning').hide();
 
 //when the page loads, focus should be in the name field
 $('#name').focus();
@@ -23,24 +30,49 @@ $('<p>').addClass("total").text("Total: $" + total).insertAfter($('label:contain
 //isValidName function takes a name as an argument, and ensures it is more than 3 letters of any case
 const isValidName = (name) => {
 
-  if(name.length > 0){
-  if(/^[a-z\S]{3,}/i.test(name) === true){
-    $('.name-warning').hide();
-    $('input[name=user_name]').css("border",  "2px solid black");
-    return true;
-
-  } else {
-    $('.name-warning').show();
-    $('.name-warning').css("color", "red");
-    $('input[name=user_name]').css("border",  "2px solid red");
-    return false;
-  }
+    //if name.length is > 1, test the input with the relevant regex
+    if(name.length === 0 || /^[a-z\S]{3,}/i.test(name) === false){
+      $('.name-warning').show();
+      $('.name-warning').css("color", "red");
+      $('input[name=user_name]').css("border",  "2px solid red");
+      return false;
+    } else {
+      //if true, make sure the warning is hidden and update the border back to original stlying
+      $('.name-warning').hide();
+      $('input[name=user_name]').css("border",  "2px solid black");
+        return true;
+      }
+  //close function
 }
+
+const isValidEmail = (email) => {
+    //if email.length is greater than 0, we want to test the expression with our regex
+    if	(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email) === false || email.length === 0){
+      //show warning;
+      $('.email-warning').show();
+      //update text color
+      $('.email-warning').css("color", "red");
+      //update border for warning;
+      $('input[name=user_email]').css("border",  "2px solid red");
+      return false
+    } else {
+      //hide warning;
+      $('.email-warning').hide();
+      //reset border qualities
+      $('input[name=user_email]').css("border",  "2px solid black");
+      return true
+    }
+  //close function
 }
 
 $('#name').on("keyup change", (event) => {
   let name = $(event.target).val();
   isValidName(name);
+});
+
+$('#mail').on("keyup change", (event) => {
+  let email = $(event.target).val();
+  isValidEmail(email);
 });
 
 //add event listener to the title field
