@@ -9,6 +9,14 @@ const paypalInfo = $('p:contains("If you selected the PayPal option we\'ll take 
 const bitcoinInfo = $('p:contains("If you selected the Bitcoin option we\'ll take you to the Coinbase site to set up your billing information. Due to the nature of exchanging Bitcoin, all Bitcoin transactions will be final.")')
 //name warning text
 const $nameWarning = "<p> Name must be at least 3 letters! </p>";
+//when the page loads, focus should be in the name field
+$('#name').focus();
+//hide the colors unless a design has been selected
+$('#colors-js-puns').hide();
+//append the total cost element
+$('<p>').addClass("total").text("Total: $" + total).insertAfter($('label:contains("npm Workshop — Wednesday 1pm-4pm, $100")'));
+//isValidName function takes a name as an argument, and ensures it is more than 3 letters of any case
+
 $($nameWarning).insertAfter($('#name'));
 $('p:contains("Name must be at least 3 letters!")').addClass("name-warning");
 //hidden on default
@@ -21,13 +29,14 @@ $('p:contains("Please enter a valid email address!")').addClass("email-warning")
 //hidden on default
 $('.email-warning').hide();
 
-//when the page loads, focus should be in the name field
-$('#name').focus();
-//hide the colors unless a design has been selected
-$('#colors-js-puns').hide();
-//append the total cost element
-$('<p>').addClass("total").text("Total: $" + total).insertAfter($('label:contains("npm Workshop — Wednesday 1pm-4pm, $100")'));
-//isValidName function takes a name as an argument, and ensures it is more than 3 letters of any case
+//activity warning textContent
+const $activityWarning = "<p> Please select at least one activity! </p>";
+$($activityWarning).insertAfter($('.total'));
+$('p:contains("Please select at least one activity!")').addClass("activity-warning");
+//hiddden on default
+$('.activity-warning').hide();
+
+
 const isValidName = (name) => {
 
     //if name.length is > 1, test the input with the relevant regex
@@ -64,6 +73,33 @@ const isValidEmail = (email) => {
     }
   //close function
 }
+
+const isAnActivitySelected = () => {
+  //test to see if any of the checkboxes have been selected.
+  if($('[type="checkbox"]:checked').length > 0){
+    $('.activity-warning').hide();
+    $('[type="checkbox"]').parent().css("color", "black");
+  } else {
+    $('.activity-warning').show();
+    $('.activity-warning').css("color", "red");
+    $('[type="checkbox"]').parent().css("color", "red");
+  }
+//close function
+}
+
+const isValidCreditCardNumber = (creditCardNumber) => {
+  if(/^\d{13,16}$/.test(creditCardNumber) === false || creditCardNumber.length === 0){
+    //show credit card number warning (conditional based upon length)
+    //update text color
+    //update border for warning;
+  } else {
+    //hide warning text;
+    //reset border qualities.
+  }
+  //close function
+}
+
+const isValidExpiryDate = (expiryDate)
 
 $('#name').on("keyup change", (event) => {
   let name = $(event.target).val();
@@ -166,7 +202,9 @@ for(let i = 0; i < checkboxes.length; i++){
 //end event listener
 });
 //credit card should be selected by default.
-
+creditCardInfo.show();
+paypalInfo.hide();
+bitcoinInfo.hide();
 //Show payment instructions based upon the payment method selected
 $('#payment').change( (event) => {
   //hide the Select Payment Method option
