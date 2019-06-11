@@ -2,6 +2,18 @@
 document.addEventListener('DOMContentLoaded', () => {
   //total variable to track cost of registration
 let total = 0
+//const that holds the credit card payment info
+const creditCardInfo = $('#credit-card');
+//const that holds the paypal payment info
+const paypalInfo = $('p:contains("If you selected the PayPal option we\'ll take you to Paypal\'s site to set up your billing information, when you click \“Register\” below")');
+//const that holds the bitcoin payment info
+const bitcoinInfo = $('p:contains("If you selected the Bitcoin option we\'ll take you to the Coinbase site to set up your billing information. Due to the nature of exchanging Bitcoin, all Bitcoin transactions will be final.")')
+//name warning text
+const $nameWarning = "<p> Name must be at least 3 letters! </p>";
+$($nameWarning).insertAfter($('#name'));
+$('p:contains("Name must be at least 3 letters!")').addClass("name-warning");
+$('.name-warning').hide();
+
 //when the page loads, focus should be in the name field
 $('#name').focus();
 //hide the colors unless a design has been selected
@@ -11,17 +23,23 @@ $('<p>').addClass("total").text("Total: $" + total).insertAfter($('label:contain
 //isValidName function takes a name as an argument, and ensures it is more than 3 letters of any case
 const isValidName = (name) => {
 
-  if(/^[a-z\S]{3,}/i.test(name)){
+  if(name.length > 0){
+  if(/^[a-z\S]{3,}/i.test(name) === true){
+    $('.name-warning').hide();
+    $('input[name=user_name]').css("border",  "2px solid black");
     return true;
-    console.log("Name is long enough!")
+
   } else {
-    console.log("Name must be at least 3 letters long");
-    $('name').css('color', 'red');
+    $('.name-warning').show();
+    $('.name-warning').css("color", "red");
+    $('input[name=user_name]').css("border",  "2px solid red");
+    return false;
   }
+}
 }
 
 $('#name').on("keyup change", (event) => {
-  let name = $(event.target).text()
+  let name = $(event.target).val();
   isValidName(name);
 });
 
@@ -115,7 +133,7 @@ for(let i = 0; i < checkboxes.length; i++){
 }
 //end event listener
 });
-
+//credit card should be selected by default.
 
 //Show payment instructions based upon the payment method selected
 $('#payment').change( (event) => {
@@ -123,9 +141,7 @@ $('#payment').change( (event) => {
   $('#payment option[value="select_method"]').hide();
   //set variable from the clicked options
   const selectedInput = $(event.target).val();
-  const creditCardInfo = $('#credit-card');
-  const paypalInfo = $('p:contains("If you selected the PayPal option we\'ll take you to Paypal\'s site to set up your billing information, when you click \“Register\” below")');
-  const bitcoinInfo = $('p:contains("If you selected the Bitcoin option we\'ll take you to the Coinbase site to set up your billing information. Due to the nature of exchanging Bitcoin, all Bitcoin transactions will be final.")')
+
   //switch on the value of the option
   switch(selectedInput){
     case "credit card":
