@@ -57,9 +57,14 @@ $('p:contains("Zip Code must be 5 digits only")').addClass("zip-code-warning");
 //hidden by default
 $('.zip-code-warning').hide();
 
+const $cvvWarning = "<p> CVV must be 3 digits only </p>";
+$($cvvWarning).insertAfter($('input[name=user_cvv]'));
+$('p:contains("CVV must be 3 digits only")').addClass("cvv-warning");
+//hidden by default
+$('.cvv-warning').hide()
+
 const isValidName = (name) => {
 
-    //if name.length is > 1, test the input with the relevant regex
     if(name.length === 0 || /^[a-z\S]{3,}/i.test(name) === false){
       $('.name-warning').show();
       $('.name-warning').css("color", "red");
@@ -75,7 +80,7 @@ const isValidName = (name) => {
 }
 
 const isValidEmail = (email) => {
-    //if email.length is greater than 0, we want to test the expression with our regex
+
     if	(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email) === false || email.length === 0){
       //show warning;
       $('.email-warning').show();
@@ -148,6 +153,46 @@ const isValidZipCode = (zipCode) => {
   }
   //close function
 }
+
+const isValidCVV = (cvv) => {
+  if(/^\d{3}$/.test(cvv) === false || cvv.length === 0){
+    //show error message
+    $('.cvv-warning').show();
+    //update text colour to red;
+    $('.cvv-warning').css("color", "red");
+    //update border for warning
+    $('input[name=user_cvv]').css("border", "2px solid red");
+  } else {
+    //hide error message
+    $('.cvv-warning').hide();
+    //update border back to original settings
+    $('input[name=user_cvv]').css("border", "2px solid black");
+  }
+  //close function
+}
+
+const validateForm = () => {
+  if($('#payment option[value="credit-card"]')){
+    if(isValidName(name) &&
+    isValidEmail(email) &&
+    isAnActivitySelected() &&
+    isValidCreditCardNumber(creditCardNumber) &&
+    isValidZipCode(zipCode) &&
+    isValidCVV(cvv)){
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+     if (isValidName(name) &&
+    isValidEmail(email) &&
+    isAnActivitySelected()){
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
 //add event listener for real-time error messaging in the name field
 $('#name').on("keyup change", (event) => {
   let name = $(event.target).val();
@@ -168,7 +213,21 @@ $('input[name=user_zip]').on("keyup change", (event) => {
   let zipCode = $(event.target).val();
   isValidZipCode(zipCode);
 });
+//add event listener for real time error messaging for the CVV field
+$('input[name=user_cvv]').on("keyup change", (event) => {
+  let cvv = $(event.target).val();
+  isValidCVV(cvv);
+});
+//add submit listener to validate individual listeners before the submit button can be pushed.
+$('form').submit((event) => {
 
+if(validateForm()){
+
+} else {
+  event.preventDefault();
+}
+
+});
 
 //add event listener to the title field
 $('#title').change( () => {
