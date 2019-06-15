@@ -36,6 +36,26 @@ $('p:contains("Please select at least one activity!")').addClass("activity-warni
 //hiddden on default
 $('.activity-warning').hide();
 
+//Credit card warning for less than 13 numbers
+const $creditCardWarningSub13Numbers = "<p> Credit Card numbers must be at least 13 numbers </p>"
+$($creditCardWarningSub13Numbers).insertAfter($('input[name=user_cc-num]'));
+$('p:contains("Credit Card numbers must be at least 13 numbers")').addClass("credit-card-warning-13");
+//hidden by default
+$('.credit-card-warning-13').hide();
+
+//credit card warning for 16 or more characters
+const $creditCardWarning16plusNumbers = "<p> Credit Card numbers can only be between 13-16 numbers long </p>";
+$($creditCardWarning16plusNumbers).insertAfter($('input[name=user_cc-num]'));
+$('p:contains("Credit Card numbers can only be between 13-16 numbers long")').addClass("credit-card-warning-16");
+//hidden by default
+$('.credit-card-warning-16').hide();
+
+//Zip code warning;
+const $zipCodeWarning = "<p> Zip Code must be 5 digits only </p>";
+$($zipCodeWarning).insertAfter($('input[name=user_zip]'));
+$('p:contains("Zip Code must be 5 digits only")').addClass("zip-code-warning");
+//hidden by default
+$('.zip-code-warning').hide();
 
 const isValidName = (name) => {
 
@@ -88,28 +108,67 @@ const isAnActivitySelected = () => {
 }
 
 const isValidCreditCardNumber = (creditCardNumber) => {
+      //show credit card number warning (conditional based upon length)
   if(/^\d{13,16}$/.test(creditCardNumber) === false || creditCardNumber.length === 0){
-    //show credit card number warning (conditional based upon length)
-    //update text color
+    if(creditCardNumber.length > 16){
+      $('.credit-card-warning-16').show();
+      $('.credit-card-warning-13').hide();
+      $('.credit-card-warning-16').css("color", "red");
+    } else if( creditCardNumber > 0 && creditCardNumber < 13){
+      $('.credit-card-warning-16').hide();
+      $('.credit-card-warning-13').show();
+      $('.credit-card-warning-13').css("color", "red");
+    }
     //update border for warning;
+    $('input[name=user_cc-num]').css("border",  "2px solid red");
   } else {
+
     //hide warning text;
+    $('.credit-card-warning-13').hide();
+    $('.credit-card-warning-16').hide();
     //reset border qualities.
+    $('input[name=user_cc-num]').css("border",  "2px solid black");
   }
   //close function
 }
 
-const isValidExpiryDate = (expiryDate)
-
+const isValidZipCode = (zipCode) => {
+  if(/^\d{5}$/.test(zipCode) === false || zipCode.length === 0){
+    //show error message
+    $('.zip-code-warning').show();
+    //update text colour to red;
+    $('.zip-code-warning').css("color", "red");
+    //update border for warning
+    $('input[name=user_zip]').css("border", "2px solid red");
+  } else {
+    //hide error message
+    $('.zip-code-warning').hide();
+    //update border back to original settings
+    $('input[name=user_zip]').css("border", "2px solid black");
+  }
+  //close function
+}
+//add event listener for real-time error messaging in the name field
 $('#name').on("keyup change", (event) => {
   let name = $(event.target).val();
   isValidName(name);
 });
-
+//add event listener for real-time error messaging in the email field
 $('#mail').on("keyup change", (event) => {
   let email = $(event.target).val();
   isValidEmail(email);
 });
+//add event listener for real-time error messaging in the credit card number field
+$('input[name=user_cc-num]').on("keyup change", (event) => {
+  let creditCardNumber = $(event.target).val();
+  isValidCreditCardNumber(creditCardNumber);
+});
+//add event listener for real-time error messaging in the zip code field
+$('input[name=user_zip]').on("keyup change", (event) => {
+  let zipCode = $(event.target).val();
+  isValidZipCode(zipCode);
+});
+
 
 //add event listener to the title field
 $('#title').change( () => {
