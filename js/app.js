@@ -13,6 +13,8 @@ const $nameWarning = "<p> Name must be at least 3 letters! </p>";
 $('#name').focus();
 //hide the colors unless a design has been selected
 $('#colors-js-puns').hide();
+//hide the other-title field with JS
+$('#other-title').hide();
 //append the total cost element
 $('<p>').addClass("total").text("Total: $" + total).insertAfter($('label:contains("npm Workshop — Wednesday 1pm-4pm, $100")'));
 //isValidName function takes a name as an argument, and ensures it is more than 3 letters of any case
@@ -63,8 +65,10 @@ $('p:contains("CVV must be 3 digits only")').addClass("cvv-warning");
 //hidden by default
 $('.cvv-warning').hide()
 
-const isValidName = (name) => {
-
+const isValidName = () => {
+//declare name variable and get the value from the DOM
+  let name = $('#name').val();
+  //test name against our regular expression, or a length of 0
     if(name.length === 0 || /^[a-z\S]{3,}/i.test(name) === false){
       $('.name-warning').show();
       $('.name-warning').css("color", "red");
@@ -79,22 +83,24 @@ const isValidName = (name) => {
   //close function
 }
 
-const isValidEmail = (email) => {
+const isValidEmail = () => {
+//declare email variable, and get value from the DOM
+  let email = $('#mail').val();
 
-    if	(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email) === false || email.length === 0){
+    if(email.length === 0 || /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email) === false){
       //show warning;
       $('.email-warning').show();
       //update text color
       $('.email-warning').css("color", "red");
       //update border for warning;
       $('input[name=user_email]').css("border",  "2px solid red");
-      return false
+      return false;
     } else {
       //hide warning;
       $('.email-warning').hide();
       //reset border qualities
       $('input[name=user_email]').css("border",  "2px solid black");
-      return true
+      return true;
     }
   //close function
 }
@@ -104,57 +110,71 @@ const isAnActivitySelected = () => {
   if($('[type="checkbox"]:checked').length > 0){
     $('.activity-warning').hide();
     $('[type="checkbox"]').parent().css("color", "black");
+    return false;
   } else {
     $('.activity-warning').show();
     $('.activity-warning').css("color", "red");
     $('[type="checkbox"]').parent().css("color", "red");
+    return true;
   }
 //close function
 }
 
-const isValidCreditCardNumber = (creditCardNumber) => {
+const isValidCreditCardNumber = () => {
+//declare credit card number variable, and get value from the DOM
+    let creditCardNumber = $('#cc-num').val();
       //show credit card number warning (conditional based upon length)
-  if(/^\d{13,16}$/.test(creditCardNumber) === false || creditCardNumber.length === 0){
+  if(creditCardNumber.length === 0 || /^\d{13,16}$/.test(creditCardNumber) === false){
     if(creditCardNumber.length > 16){
       $('.credit-card-warning-16').show();
       $('.credit-card-warning-13').hide();
       $('.credit-card-warning-16').css("color", "red");
-    } else if( creditCardNumber > 0 && creditCardNumber < 13){
+
+    } else if(creditCardNumber.length === 0 || creditCardNumber.length > 0 && creditCardNumber.length < 13){
       $('.credit-card-warning-16').hide();
       $('.credit-card-warning-13').show();
       $('.credit-card-warning-13').css("color", "red");
     }
     //update border for warning;
     $('input[name=user_cc-num]').css("border",  "2px solid red");
+    return false;
   } else {
-
     //hide warning text;
     $('.credit-card-warning-13').hide();
     $('.credit-card-warning-16').hide();
     //reset border qualities.
     $('input[name=user_cc-num]').css("border",  "2px solid black");
+    return true;
   }
   //close function
 }
 
-const isValidZipCode = (zipCode) => {
-  if(/^\d{5}$/.test(zipCode) === false || zipCode.length === 0){
+const isValidZipCode = () => {
+// declare zipcode variable, and get the value from the DOM
+  let zipCode = $('#zip').val();
+  //test zipCode against our regex, or a length of 0
+  if(/^\d{5}$/.test(zipCode) === false || zipCode.length == 0){
     //show error message
     $('.zip-code-warning').show();
     //update text colour to red;
     $('.zip-code-warning').css("color", "red");
     //update border for warning
     $('input[name=user_zip]').css("border", "2px solid red");
+    return false;
   } else {
     //hide error message
     $('.zip-code-warning').hide();
     //update border back to original settings
     $('input[name=user_zip]').css("border", "2px solid black");
+    return true;
   }
   //close function
 }
 
-const isValidCVV = (cvv) => {
+const isValidCVV = () => {
+//declare the cvv variable, and get the value from the validateForm
+  let cvv = $('#cvv').val();
+  //
   if(/^\d{3}$/.test(cvv) === false || cvv.length === 0){
     //show error message
     $('.cvv-warning').show();
@@ -162,30 +182,32 @@ const isValidCVV = (cvv) => {
     $('.cvv-warning').css("color", "red");
     //update border for warning
     $('input[name=user_cvv]').css("border", "2px solid red");
+    return false;
   } else {
     //hide error message
     $('.cvv-warning').hide();
     //update border back to original settings
     $('input[name=user_cvv]').css("border", "2px solid black");
+    return true;
   }
   //close function
 }
 
 const validateForm = () => {
   if($('#payment option[value="credit-card"]')){
-    if(isValidName(name) &&
-    isValidEmail(email) &&
+    if(isValidName() &&
+    isValidEmail() &&
     isAnActivitySelected() &&
-    isValidCreditCardNumber(creditCardNumber) &&
-    isValidZipCode(zipCode) &&
-    isValidCVV(cvv)){
+    isValidCreditCardNumber() &&
+    isValidZipCode() &&
+    isValidCVV()){
       return true;
     } else {
       return false;
     }
   } else {
-     if (isValidName(name) &&
-    isValidEmail(email) &&
+     if (isValidName() &&
+    isValidEmail() &&
     isAnActivitySelected()){
       return true;
     } else {
@@ -194,37 +216,33 @@ const validateForm = () => {
   }
 }
 //add event listener for real-time error messaging in the name field
-$('#name').on("keyup change", (event) => {
-  let name = $(event.target).val();
-  isValidName(name);
+$('#name').on("keyup change", () => {
+  isValidName();
 });
 //add event listener for real-time error messaging in the email field
-$('#mail').on("keyup change", (event) => {
-  let email = $(event.target).val();
-  isValidEmail(email);
+$('#mail').on("keyup change", () => {
+  isValidEmail();
 });
 //add event listener for real-time error messaging in the credit card number field
-$('input[name=user_cc-num]').on("keyup change", (event) => {
-  let creditCardNumber = $(event.target).val();
-  isValidCreditCardNumber(creditCardNumber);
+$('input[name=user_cc-num]').on("keyup change", () => {
+  isValidCreditCardNumber();
 });
 //add event listener for real-time error messaging in the zip code field
-$('input[name=user_zip]').on("keyup change", (event) => {
-  let zipCode = $(event.target).val();
-  isValidZipCode(zipCode);
+$('input[name=user_zip]').on("keyup change", () => {
+  isValidZipCode();
 });
 //add event listener for real time error messaging for the CVV field
-$('input[name=user_cvv]').on("keyup change", (event) => {
-  let cvv = $(event.target).val();
-  isValidCVV(cvv);
+$('input[name=user_cvv]').on("keyup change", () => {
+  isValidCVV();
 });
 //add submit listener to validate individual listeners before the submit button can be pushed.
 $('form').submit((event) => {
 
 if(validateForm()){
-
+  return true
 } else {
   event.preventDefault();
+  return false;
 }
 
 });
@@ -233,12 +251,11 @@ if(validateForm()){
 $('#title').change( () => {
   //if the user selects other, then display the input field for other roles
   if($('#title option:selected').text() === "Other"){
-  $('<input> </input>').insertAfter($('#title')).addClass("other-title");
-  $('.other-title').attr('type', 'text').attr('placeholder', 'Your Job Role');
+    $('#other-title').show()
   }
   //if user selects another role, remove .other-title
 if($('#title option:selected').text() != "Other"){
-  $('.other-title').remove();
+  $('#other-title').hide();
 }
 });
 
@@ -250,6 +267,7 @@ $('#colors-js-puns').show();
 //if js puns are selected, hide heart js options, and show js puns options
   if($('#design option:selected').val() === "js puns"){
     $('#color option[value ="cornflowerblue"]').attr("selected", true);
+    $('#color option[value ="tomato"]').attr("selected", false);
     $('#color option[value ="tomato"]').hide();
     $('#color option[value ="steelblue"]').hide();
     $('#color option[value ="dimgrey"]').hide();
@@ -260,6 +278,7 @@ $('#colors-js-puns').show();
 //if heart js chosen, hide js puns, and show heart js options
   if($('#design option:selected').val() === "heart js"){
     $('#color option[value ="tomato"]').attr("selected", true);
+    $('#color option[value ="cornflowerblue"]').attr("selected", false);
     $('#color option[value ="cornflowerblue"]').hide();
     $('#color option[value ="darkslategrey"]').hide();
     $('#color option[value ="gold"]').hide();
@@ -317,6 +336,7 @@ for(let i = 0; i < checkboxes.length; i++){
     }
   }
 }
+isAnActivitySelected();
 //end event listener
 });
 //credit card should be selected by default.
