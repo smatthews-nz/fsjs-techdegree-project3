@@ -1,3 +1,10 @@
+/***
+Treehouse Full Stack JavaScript Techdegree - Project 3 - Interactive Webform
+Author - Sam Matthews
+Date - June 2019
+***/
+
+//Load JS once HTML Content has loaded
 document.addEventListener('DOMContentLoaded', () => {
   //total variable to track cost of registration
 let total = 0
@@ -17,8 +24,8 @@ $('#colors-js-puns').hide();
 $('#other-title').hide();
 //append the total cost element
 $('<p>').addClass("total").text("Total: $" + total).insertAfter($('label:contains("npm Workshop — Wednesday 1pm-4pm, $100")'));
-//isValidName function takes a name as an argument, and ensures it is more than 3 letters of any case
 
+//name warning text
 $($nameWarning).insertAfter($('#name'));
 $('p:contains("Name must be at least 3 letters!")').addClass("name-warning");
 //hidden on default
@@ -59,16 +66,40 @@ $('p:contains("Zip Code must be 5 digits only")').addClass("zip-code-warning");
 //hidden by default
 $('.zip-code-warning').hide();
 
+//CVV warning text
 const $cvvWarning = "<p> CVV must be 3 digits only </p>";
 $($cvvWarning).insertAfter($('input[name=user_cvv]'));
 $('p:contains("CVV must be 3 digits only")').addClass("cvv-warning");
 //hidden by default
 $('.cvv-warning').hide()
 
+//function to show credit card payment info.
+const showCardPayment = () => {
+  creditCardInfo.show();
+  paypalInfo.hide();
+  bitcoinInfo.hide();
+}
+
+//function to show paypal payment information
+const showPayPalPayment = () => {
+  paypalInfo.show();
+  bitcoinInfo.hide();
+  creditCardInfo.hide();
+}
+
+//function to show bitcoin payment information
+const showBitcoinPayment = () => {
+  bitcoinInfo.show();
+  creditCardInfo.hide();
+  paypalInfo.hide();
+}
+
+//isValidName function takes a name input and ensures it is more than 3 letters of any case
 const isValidName = () => {
 //declare name variable and get the value from the DOM
   let name = $('#name').val();
   //test name against our regular expression, or a length of 0
+  console.log(name.length);
     if(name.length === 0 || /^[a-z\S]{3,}/i.test(name) === false){
       $('.name-warning').show();
       $('.name-warning').css("color", "red");
@@ -83,10 +114,11 @@ const isValidName = () => {
   //close function
 }
 
+//isValidEmail function takes an email input, and ensures it is in the correct email format
 const isValidEmail = () => {
 //declare email variable, and get value from the DOM
   let email = $('#mail').val();
-
+  console.log(email.length);
     if(email.length === 0 || /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email) === false){
       //show warning;
       $('.email-warning').show();
@@ -105,21 +137,23 @@ const isValidEmail = () => {
   //close function
 }
 
+//isAnActivitySelected function checks that at least one activity has been selected from the form
 const isAnActivitySelected = () => {
   //test to see if any of the checkboxes have been selected.
   if($('[type="checkbox"]:checked').length > 0){
     $('.activity-warning').hide();
     $('[type="checkbox"]').parent().css("color", "black");
-    return false;
+    return true;
   } else {
     $('.activity-warning').show();
     $('.activity-warning').css("color", "red");
     $('[type="checkbox"]').parent().css("color", "red");
-    return true;
+    return false;
   }
 //close function
 }
 
+//isValidCreditCardNumber takes a Credit Card number input, and validates that it is between 13 and 16 digits long
 const isValidCreditCardNumber = () => {
 //declare credit card number variable, and get value from the DOM
     let creditCardNumber = $('#cc-num').val();
@@ -149,11 +183,12 @@ const isValidCreditCardNumber = () => {
   //close function
 }
 
+//isValidZipCode function takes a zipcode input, and validates that it only 5 digits long
 const isValidZipCode = () => {
 // declare zipcode variable, and get the value from the DOM
   let zipCode = $('#zip').val();
   //test zipCode against our regex, or a length of 0
-  if(/^\d{5}$/.test(zipCode) === false || zipCode.length == 0){
+  if(/^\d{5}$/.test(zipCode) === false || zipCode.length === 0){
     //show error message
     $('.zip-code-warning').show();
     //update text colour to red;
@@ -171,6 +206,7 @@ const isValidZipCode = () => {
   //close function
 }
 
+//isValidCVV function takes a CVV input, and validates that it only 3 digits long
 const isValidCVV = () => {
 //declare the cvv variable, and get the value from the validateForm
   let cvv = $('#cvv').val();
@@ -192,28 +228,42 @@ const isValidCVV = () => {
   }
   //close function
 }
-
+/*
+Master validation function calls each individual function in turn to
+validate the whole form. If credit card payment selected, includes validation for credit Card
+information.
+*/
 const validateForm = () => {
-  if($('#payment option[value="credit-card"]')){
-    if(isValidName() &&
-    isValidEmail() &&
-    isAnActivitySelected() &&
-    isValidCreditCardNumber() &&
-    isValidZipCode() &&
-    isValidCVV()){
-      return true;
-    } else {
+  if($('#payment').val() === "credit card"){
+    isValidName();
+    isValidEmail();
+    isAnActivitySelected();
+    isValidCreditCardNumber();
+    isValidZipCode();
+    isValidCVV();
+    if(isValidName() === false ||
+    isValidEmail() === false||
+    isAnActivitySelected() === false ||
+    isValidCreditCardNumber() === false ||
+    isValidZipCode() === false||
+    isValidCVV() === false){
       return false;
+    } else {
+      return true;
     }
   } else {
-     if (isValidName() &&
-    isValidEmail() &&
-    isAnActivitySelected()){
-      return true;
-    } else {
+    isValidName();
+    isValidEmail();
+    isAnActivitySelected();
+     if (isValidName() === false ||
+    isValidEmail() === false ||
+    isAnActivitySelected() === false){
       return false;
+    } else {
+      return true;
     }
   }
+
 }
 //add event listener for real-time error messaging in the name field
 $('#name').on("keyup change", () => {
@@ -235,17 +285,7 @@ $('input[name=user_zip]').on("keyup change", () => {
 $('input[name=user_cvv]').on("keyup change", () => {
   isValidCVV();
 });
-//add submit listener to validate individual listeners before the submit button can be pushed.
-$('form').submit((event) => {
 
-if(validateForm()){
-  return true
-} else {
-  event.preventDefault();
-  return false;
-}
-
-});
 
 //add event listener to the title field
 $('#title').change( () => {
@@ -336,13 +376,12 @@ for(let i = 0; i < checkboxes.length; i++){
     }
   }
 }
+//real time error warning to ensure an activity has been selected.
 isAnActivitySelected();
 //end event listener
 });
 //credit card should be selected by default.
-creditCardInfo.show();
-paypalInfo.hide();
-bitcoinInfo.hide();
+showCardPayment();
 //Show payment instructions based upon the payment method selected
 $('#payment').change( (event) => {
   //hide the Select Payment Method option
@@ -354,25 +393,28 @@ $('#payment').change( (event) => {
   switch(selectedInput){
     case "credit card":
     //if credit card selected, ensure credit card option is shown, and others hidden
-    creditCardInfo.show();
-    paypalInfo.hide();
-    bitcoinInfo.hide();
+    showCardPayment();
     break;
     case "paypal":
     //if paypal option is chosen, ensure paypal information is shown, and others hidden
-    paypalInfo.show();
-    bitcoinInfo.hide();
-    creditCardInfo.hide();
+    showPayPalPayment();
     break;
     case "bitcoin":
     //if bitcoin option is chosen, ensure bitcoin information is shown, and others hidden
-    bitcoinInfo.show();
-    creditCardInfo.hide();
-    paypalInfo.hide();
+    showBitcoinPayment();
   }
 });
 
-
-
+//add submit listener to validate individual listeners before the submit button can be pushed.
+$('form').on("submit", (event) => {
+const isValidForm = validateForm();
+if(isValidForm === true){
+  return true
+} else {
+  event.preventDefault();
+  return false;
+}
+//end event listener
+});
 
 });
